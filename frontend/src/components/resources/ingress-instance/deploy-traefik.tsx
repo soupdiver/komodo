@@ -68,7 +68,7 @@ export const DeployTraefikButton = ({ id }: { id: string }) => {
   const { mutate: createStack, isPending } = useWrite("CreateStack", {
     onSuccess: (stack) => {
       setOpen(false);
-      navigate(`/stacks/${stack.id}`);
+      navigate(`/stacks/${stack._id?.$oid}`);
     },
   });
 
