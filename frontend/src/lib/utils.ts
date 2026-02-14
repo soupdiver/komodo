@@ -27,7 +27,7 @@ export const RESOURCE_TARGETS: UsableResource[] = [
   "ResourceSync",
 ];
 
-export const SETTINGS_RESOURCES: UsableResource[] = ["Builder", "Alerter", "IngressInstance"];
+export const SETTINGS_RESOURCES: UsableResource[] = ["Builder", "Alerter"];
 
 export const SIDEBAR_RESOURCES: UsableResource[] = RESOURCE_TARGETS.filter(
   (target) => !SETTINGS_RESOURCES.includes(target)

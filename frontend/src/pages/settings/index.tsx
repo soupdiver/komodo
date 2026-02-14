@@ -31,6 +31,7 @@ export default function Settings() {
             <TabsTrigger value="Tags">Tags</TabsTrigger>
             <TabsTrigger value="Builders">Builders</TabsTrigger>
             <TabsTrigger value="Alerters">Alerters</TabsTrigger>
+            <TabsTrigger value="IngressInstances">Ingress</TabsTrigger>
             {user?.admin && (
               <TabsTrigger value="Providers">Providers</TabsTrigger>
             )}
@@ -52,6 +53,9 @@ export default function Settings() {
         </TabsContent>
         <TabsContent value="Alerters">
           <Resources _type="Alerter" />
+        </TabsContent>
+        <TabsContent value="IngressInstances">
+          <Resources _type="IngressInstance" />
         </TabsContent>
         {user?.admin && (
           <TabsContent value="Providers">
