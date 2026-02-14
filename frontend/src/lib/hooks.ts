@@ -369,6 +369,7 @@ export const useAllResources = (): ResourceMap => {
     Action: useRead("ListActions", {}).data,
     Builder: useRead("ListBuilders", {}).data,
     Alerter: useRead("ListAlerters", {}).data,
+    IngressInstance: useRead("ListIngressInstances", {}).data,
     ResourceSync: useRead("ListResourceSyncs", {}).data,
   };
 };

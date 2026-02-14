@@ -76,7 +76,18 @@ export const IngressInstanceComponents: RequiredResourceComponents = {
 
   DangerZone: ({ id }) => <DeleteResource type="IngressInstance" id={id} />,
 
-  ResourcePageHeader: ({ id }) => (
-    <ResourcePageHeader type="IngressInstance" id={id} />
-  ),
+  ResourcePageHeader: ({ id }) => {
+    const instance = useIngressInstance(id);
+    return (
+      <ResourcePageHeader
+        intent="None"
+        icon={<Network className="w-8" />}
+        type="IngressInstance"
+        id={id}
+        resource={instance}
+        state={instance?.info.enabled ? "Enabled" : "Disabled"}
+        status={instance?.info.is_default ? "Default" : undefined}
+      />
+    );
+  },
 };

@@ -1,6 +1,6 @@
 import { DataTable, SortableHeader } from "@ui/data-table";
 import { Types } from "komodo_client";
-import { TableTags } from "../common";
+import { TableTags } from "@components/tags";
 
 export const IngressInstanceTable = ({
   instances,
@@ -31,9 +31,8 @@ export const IngressInstanceTable = ({
           accessorFn: (instance) => instance.info.route_count.toString(),
         },
         {
-          accessorKey: "tags",
           header: "Tags",
-          cell: ({ row }) => <TableTags tags={row.original.tags} />,
+          cell: ({ row }) => <TableTags tag_ids={row.original.tags} />,
         },
       ]}
     />
