@@ -1,21 +1,31 @@
 import { DataTable, SortableHeader } from "@ui/data-table";
 import { Types } from "komodo_client";
 import { TableTags } from "@components/tags";
+import { ResourceLink } from "../common";
+import { useSelectedResources } from "@lib/hooks";
 
 export const IngressInstanceTable = ({
   instances,
 }: {
   instances: Types.IngressInstanceListItem[];
 }) => {
+  const [_, setSelectedResources] = useSelectedResources("IngressInstance");
   return (
     <DataTable
       tableKey="ingress-instances"
       data={instances}
+      selectOptions={{
+        selectKey: ({ name }) => name,
+        onSelect: setSelectedResources,
+      }}
       columns={[
         {
           accessorKey: "name",
           header: ({ column }) => (
             <SortableHeader column={column} title="Name" />
+          ),
+          cell: ({ row }) => (
+            <ResourceLink type="IngressInstance" id={row.original.id} />
           ),
         },
         {

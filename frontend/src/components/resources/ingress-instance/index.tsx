@@ -6,7 +6,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@ui/card";
 import { DeleteResource, NewResource, ResourcePageHeader } from "../common";
 import { IngressInstanceTable } from "./table";
 import { Types } from "komodo_client";
-import { GroupActions } from "@components/group-actions";
+import { DeployTraefikButton } from "./deploy-traefik";
 
 const useIngressInstance = (id?: string) =>
   useRead("ListIngressInstances", {}).data?.find((d) => d.id === id);
@@ -17,7 +17,7 @@ export const IngressInstanceComponents: RequiredResourceComponents = {
 
   Description: () => <>Manage Traefik ingress instances and dynamic routing.</>,
 
-  GroupActions: () => <GroupActions type="IngressInstance" actions={[]} />,
+  GroupActions: () => null,
 
   Dashboard: () => {
     const instances_count = useRead("ListIngressInstances", {}).data?.length;
@@ -68,7 +68,9 @@ export const IngressInstanceComponents: RequiredResourceComponents = {
     },
   },
 
-  Actions: {},
+  Actions: {
+    DeployTraefik: ({ id }) => <DeployTraefikButton id={id} />,
+  },
 
   Page: {},
 
