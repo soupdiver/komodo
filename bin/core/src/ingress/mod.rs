@@ -16,7 +16,7 @@ use crate::state::{db_client, ingress_cache, server_status_cache};
 /// Traefik polls these endpoints to get dynamic configuration.
 pub fn router() -> Router {
   Router::new()
-    .route("/:instance/config", get(traefik_config_handler))
+    .route("/{instance}/config", get(traefik_config_handler))
 }
 
 /// GET /ingress/{instance}/config
