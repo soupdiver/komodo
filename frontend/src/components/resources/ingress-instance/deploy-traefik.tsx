@@ -108,9 +108,8 @@ export const DeployTraefikButton = ({ id }: { id: string }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary" className="gap-2">
+        <Button variant="ghost" size="icon">
           <Network className="w-4 h-4" />
-          Deploy Traefik
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl">

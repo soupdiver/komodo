@@ -3,6 +3,7 @@ import { Types } from "komodo_client";
 import { TableTags } from "@components/tags";
 import { ResourceLink } from "../common";
 import { useSelectedResources } from "@lib/hooks";
+import { DeployTraefikButton } from "./deploy-traefik";
 
 export const IngressInstanceTable = ({
   instances,
@@ -43,6 +44,10 @@ export const IngressInstanceTable = ({
         {
           header: "Tags",
           cell: ({ row }) => <TableTags tag_ids={row.original.tags} />,
+        },
+        {
+          header: "Actions",
+          cell: ({ row }) => <DeployTraefikButton id={row.original.id} />,
         },
       ]}
     />
