@@ -23,10 +23,11 @@ export const RESOURCE_TARGETS: UsableResource[] = [
   "Action",
   "Builder",
   "Alerter",
+  "IngressInstance",
   "ResourceSync",
 ];
 
-export const SETTINGS_RESOURCES: UsableResource[] = ["Builder", "Alerter"];
+export const SETTINGS_RESOURCES: UsableResource[] = ["Builder", "Alerter", "IngressInstance"];
 
 export const SIDEBAR_RESOURCES: UsableResource[] = RESOURCE_TARGETS.filter(
   (target) => !SETTINGS_RESOURCES.includes(target)
@@ -148,11 +149,13 @@ export const convertTsMsToLocalUnixTsInMs = (ts: number) => ts - tzOffsetMs;
 
 export const usableResourcePath = (resource: UsableResource) => {
   if (resource === "ResourceSync") return "resource-syncs";
+  if (resource === "IngressInstance") return "ingress-instances";
   return `${resource.toLowerCase()}s`;
 };
 
 export const usableResourceExecuteKey = (resource: UsableResource) => {
   if (resource === "ResourceSync") return "sync";
+  if (resource === "IngressInstance") return "ingress-instance";
   return `${resource.toLowerCase()}`;
 };
 

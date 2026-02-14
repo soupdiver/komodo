@@ -9,6 +9,7 @@ import { ProcedureComponents } from "./procedure/index";
 import { ResourceSyncComponents } from "./resource-sync";
 import { StackComponents } from "./stack";
 import { ActionComponents } from "./action";
+import { IngressInstanceComponents } from "./ingress-instance";
 
 export const ResourceComponents: {
   [key in UsableResource]: RequiredResourceComponents;
@@ -23,4 +24,5 @@ export const ResourceComponents: {
   ResourceSync: ResourceSyncComponents,
   Builder: BuilderComponents,
   Alerter: AlerterComponents,
+  IngressInstance: IngressInstanceComponents,
 };
