@@ -22,7 +22,7 @@ export enum PermissionLevel {
 
 export interface PermissionLevelAndSpecifics {
 	level: PermissionLevel;
-	specific: IndexSet<SpecificPermission>;
+	specific: Array<SpecificPermission>;
 }
 
 export type I64 = number;
@@ -53,7 +53,7 @@ export interface Resource<Config, Info> {
 	 * Set a base permission level that all users will have on the
 	 * resource.
 	 */
-	base_permission?: PermissionLevelAndSpecifics;
+	base_permission?: PermissionLevelAndSpecifics | PermissionLevel;
 	/** When description last updated */
 	updated_at?: I64;
 }
@@ -144,7 +144,7 @@ export interface ResourceListItem<Info> {
 	/** The resource id */
 	id: string;
 	/** The resource type, ie `Server` or `Deployment` */
-	type: ResourceTargetVariant;
+	type: ResourceTarget["type"];
 	/** The resource name */
 	name: string;
 	/** Whether resource is a template */
@@ -299,7 +299,7 @@ export interface AlerterConfig {
 	 * Only send specific alert types.
 	 * If empty, will send all alert types.
 	 */
-	alert_types?: AlertDataVariant[];
+	alert_types?: AlertData["type"][];
 	/**
 	 * Only send alerts on specific resources.
 	 * If empty, will send alerts for all resources.
@@ -317,7 +317,7 @@ export interface AlerterListItemInfo {
 	/** Whether alerter is enabled for sending alerts */
 	enabled: boolean;
 	/** The type of the alerter, eg. `Slack`, `Custom` */
-	endpoint_type: AlerterEndpointVariant;
+	endpoint_type: AlerterEndpoint["type"];
 }
 
 export type AlerterListItem = ResourceListItem<AlerterListItemInfo>;
@@ -334,7 +334,7 @@ export interface AlerterQuerySpecifics {
 	 * Only include alerters with these endpoint types.
 	 * If empty, don't filter by enpoint type.
 	 */
-	types: AlerterEndpointVariant[];
+	types: AlerterEndpoint["type"][];
 }
 
 export type AlerterQuery = ResourceQuery<AlerterQuerySpecifics>;
@@ -1091,9 +1091,9 @@ export interface User {
 	/** When the user last opened updates dropdown. */
 	last_update_view?: I64;
 	/** Recently viewed ids */
-	recents?: Record<ResourceTargetVariant, string[]>;
+	recents?: Record<ResourceTarget["type"], string[]>;
 	/** Give the user elevated permissions on all resources of a certain type */
-	all?: IndexMap<ResourceTargetVariant, PermissionLevelAndSpecifics>;
+	all?: Record<ResourceTarget["type"], PermissionLevelAndSpecifics | PermissionLevel>;
 	updated_at?: I64;
 }
 
@@ -1601,7 +1601,7 @@ export type AlertData =
 	/** A schedule was run */
 	| { type: "ScheduleRun", data: {
 	/** Procedure or Action */
-	resource_type: ResourceTargetVariant;
+	resource_type: ResourceTarget["type"];
 	/** The resource id */
 	id: string;
 	/** The resource name */
@@ -2622,7 +2622,7 @@ export interface UserGroup {
 	/** User ids of group members */
 	users?: string[];
 	/** Give the user group elevated permissions on all resources of a certain type */
-	all?: IndexMap<ResourceTargetVariant, PermissionLevelAndSpecifics>;
+	all?: Record<ResourceTarget["type"], PermissionLevelAndSpecifics | PermissionLevel>;
 	/** Unix time (ms) when user group last updated */
 	updated_at?: I64;
 }
@@ -3746,7 +3746,7 @@ export interface Permission {
 	/** The permission level for the [user_target] on the [resource_target]. */
 	level?: PermissionLevel;
 	/** Any specific permissions for the [user_target] on the [resource_target]. */
-	specific?: IndexSet<SpecificPermission>;
+	specific?: Array<SpecificPermission>;
 }
 
 export type ListPermissionsResponse = Permission[];
@@ -7375,7 +7375,7 @@ export interface PermissionToml {
 	 */
 	level?: PermissionLevel;
 	/** Any [SpecificPermissions](SpecificPermission) on the resource */
-	specific?: IndexSet<SpecificPermission>;
+	specific?: Array<SpecificPermission>;
 }
 
 /**
@@ -7755,7 +7755,7 @@ export interface UserGroupToml {
 	/** Users in the group */
 	users?: string[];
 	/** Give the user group elevated permissions on all resources of a certain type */
-	all?: IndexMap<ResourceTargetVariant, PermissionLevelAndSpecifics>;
+	all?: Record<ResourceTarget["type"], PermissionLevelAndSpecifics | PermissionLevel>;
 	/** Permissions given to the group */
 	permissions?: PermissionToml[];
 }
@@ -7891,7 +7891,7 @@ export interface RunSync {
 	 * Only execute sync on a specific resource type.
 	 * Combine with `resource_id` to specify resource.
 	 */
-	resource_type?: ResourceTargetVariant;
+	resource_type?: ResourceTarget["type"];
 	/**
 	 * Only execute sync on a specific resources.
 	 * Combine with `resource_type` to specify resources.
@@ -8374,9 +8374,9 @@ export interface UpdatePermissionOnResourceType {
 	/** Specify the user or user group. */
 	user_target: UserTarget;
 	/** The resource type: eg. Server, Build, Deployment, etc. */
-	resource_type: ResourceTargetVariant;
+	resource_type: ResourceTarget["type"];
 	/** The base permission level. */
-	permission: PermissionLevelAndSpecifics;
+	permission: PermissionLevelAndSpecifics | PermissionLevel;
 }
 
 /**
@@ -8389,7 +8389,7 @@ export interface UpdatePermissionOnTarget {
 	/** Specify the target resource. */
 	resource_target: ResourceTarget;
 	/** Specify the permission level. */
-	permission: PermissionLevelAndSpecifics;
+	permission: PermissionLevelAndSpecifics | PermissionLevel;
 }
 
 /**

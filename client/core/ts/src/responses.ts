@@ -145,6 +145,13 @@ export type ReadResponses = {
   ListAlerters: Types.ListAlertersResponse;
   ListFullAlerters: Types.ListFullAlertersResponse;
 
+  // ==== INGRESS INSTANCE ====
+  GetIngressInstancesSummary: Types.GetIngressInstancesSummaryResponse;
+  GetIngressInstance: Types.GetIngressInstanceResponse;
+  ListIngressInstances: Types.ListIngressInstancesResponse;
+  ListFullIngressInstances: Types.ListFullIngressInstancesResponse;
+  ListIngressRoutes: Types.ListIngressRoutesResponse;
+
   // ==== TOML ====
   ExportAllResourcesToToml: Types.ExportAllResourcesToTomlResponse;
   ExportResourcesToToml: Types.ExportResourcesToTomlResponse;
@@ -272,6 +279,13 @@ export type WriteResponses = {
   DeleteAlerter: Types.Alerter;
   UpdateAlerter: Types.Alerter;
   RenameAlerter: Types.Update;
+
+  // ==== INGRESS INSTANCE ====
+  CreateIngressInstance: Types.IngressInstance;
+  CopyIngressInstance: Types.IngressInstance;
+  DeleteIngressInstance: Types.IngressInstance;
+  UpdateIngressInstance: Types.IngressInstance;
+  RenameIngressInstance: Types.Update;
 
   // ==== PROCEDURE ====
   CreateProcedure: Types.Procedure;
