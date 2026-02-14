@@ -3,8 +3,9 @@ use komodo_client::{
   api::write::{UpdateResourceMeta, UpdateResourceMetaResponse},
   entities::{
     ResourceTarget, action::Action, alerter::Alerter, build::Build,
-    builder::Builder, deployment::Deployment, procedure::Procedure,
-    repo::Repo, server::Server, stack::Stack, sync::ResourceSync,
+    builder::Builder, deployment::Deployment, ingress::IngressInstance,
+    procedure::Procedure, repo::Repo, server::Server, stack::Stack,
+    sync::ResourceSync,
   },
 };
 use resolver_api::Resolve;
@@ -48,6 +49,10 @@ impl Resolve<WriteArgs> for UpdateResourceMeta {
       }
       ResourceTarget::Alerter(id) => {
         resource::update_meta::<Alerter>(&id, meta, args).await?;
+      }
+      ResourceTarget::IngressInstance(id) => {
+        resource::update_meta::<IngressInstance>(&id, meta, args)
+          .await?;
       }
       ResourceTarget::Procedure(id) => {
         resource::update_meta::<Procedure>(&id, meta, args).await?;

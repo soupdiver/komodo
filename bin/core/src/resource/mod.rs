@@ -55,6 +55,7 @@ mod alerter;
 mod build;
 mod builder;
 mod deployment;
+mod ingress;
 mod procedure;
 mod refresh;
 mod repo;
@@ -680,6 +681,9 @@ fn resource_target<T: KomodoResource>(id: String) -> ResourceTarget {
     ResourceTargetVariant::Repo => ResourceTarget::Repo(id),
     ResourceTargetVariant::Alerter => ResourceTarget::Alerter(id),
     ResourceTargetVariant::Procedure => ResourceTarget::Procedure(id),
+    ResourceTargetVariant::IngressInstance => {
+      ResourceTarget::IngressInstance(id)
+    }
     ResourceTargetVariant::ResourceSync => {
       ResourceTarget::ResourceSync(id)
     }
@@ -965,6 +969,7 @@ where
     ResourceTarget::Stack(id) => ("recents.Stack", id),
     ResourceTarget::Builder(id) => ("recents.Builder", id),
     ResourceTarget::Alerter(id) => ("recents.Alerter", id),
+    ResourceTarget::IngressInstance(id) => ("recents.IngressInstance", id),
     ResourceTarget::ResourceSync(id) => ("recents.ResourceSync", id),
     ResourceTarget::System(_) => return,
   };

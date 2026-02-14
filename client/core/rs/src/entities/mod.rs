@@ -39,6 +39,8 @@ pub mod config;
 pub mod deployment;
 /// Networks, Images, Containers.
 pub mod docker;
+/// Subtypes of [IngressInstance][ingress::IngressInstance].
+pub mod ingress;
 /// Subtypes of [LogConfig][logger::LogConfig].
 pub mod logger;
 /// Subtypes of [Permission][permission::Permission].
@@ -1125,6 +1127,12 @@ pub enum Operation {
   TestAlerter,
   SendAlert,
 
+  // ingress instance
+  CreateIngressInstance,
+  UpdateIngressInstance,
+  RenameIngressInstance,
+  DeleteIngressInstance,
+
   // sync
   CreateResourceSync,
   UpdateResourceSync,
@@ -1242,6 +1250,7 @@ pub enum ResourceTarget {
   Action(String),
   Builder(String),
   Alerter(String),
+  IngressInstance(String),
   ResourceSync(String),
 }
 
@@ -1270,6 +1279,7 @@ impl ResourceTarget {
       ResourceTarget::Action(id) => id.is_empty(),
       ResourceTarget::Builder(id) => id.is_empty(),
       ResourceTarget::Alerter(id) => id.is_empty(),
+      ResourceTarget::IngressInstance(id) => id.is_empty(),
       ResourceTarget::ResourceSync(id) => id.is_empty(),
     }
   }
@@ -1288,6 +1298,7 @@ impl ResourceTarget {
       ResourceTarget::Alerter(id) => id,
       ResourceTarget::Procedure(id) => id,
       ResourceTarget::Action(id) => id,
+      ResourceTarget::IngressInstance(id) => id,
       ResourceTarget::ResourceSync(id) => id,
     };
     (self.extract_variant(), id)
@@ -1330,6 +1341,12 @@ impl From<&alerter::Alerter> for ResourceTarget {
   }
 }
 
+impl From<&ingress::IngressInstance> for ResourceTarget {
+  fn from(ingress_instance: &ingress::IngressInstance) -> Self {
+    Self::IngressInstance(ingress_instance.id.clone())
+  }
+}
+
 impl From<&procedure::Procedure> for ResourceTarget {
   fn from(procedure: &procedure::Procedure) -> Self {
     Self::Procedure(procedure.id.clone())
@@ -1366,6 +1383,7 @@ impl ResourceTargetVariant {
       ResourceTargetVariant::Repo => "repo",
       ResourceTargetVariant::Alerter => "alerter",
       ResourceTargetVariant::Procedure => "procedure",
+      ResourceTargetVariant::IngressInstance => "ingress_instance",
       ResourceTargetVariant::ResourceSync => "resource_sync",
       ResourceTargetVariant::Stack => "stack",
       ResourceTargetVariant::Action => "action",
@@ -1428,6 +1446,9 @@ pub fn resource_link(
     }
     ResourceTargetVariant::Action => {
       format!("/actions/{id}")
+    }
+    ResourceTargetVariant::IngressInstance => {
+      format!("/ingress-instances/{id}")
     }
     ResourceTargetVariant::ResourceSync => {
       format!("/resource-syncs/{id}")

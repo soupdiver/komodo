@@ -365,6 +365,13 @@ pub async fn get_updates_for_execution(
             .map(|b| b.name.clone())
             .unwrap_or_default()
         }
+        ResourceTarget::IngressInstance(id) => {
+          *id = all_resources
+            .ingress_instances
+            .get(id)
+            .map(|i| i.name.clone())
+            .unwrap_or_default()
+        }
         ResourceTarget::Procedure(id) => {
           *id = all_resources
             .procedures
@@ -868,6 +875,20 @@ async fn expand_user_group_permissions(
           });
         expanded.extend(permissions);
       }
+      ResourceTargetVariant::IngressInstance => {
+        let permissions = all_resources
+          .ingress_instances
+          .values()
+          .filter(|resource| matcher.is_match(&resource.name))
+          .map(|resource| PermissionToml {
+            target: ResourceTarget::IngressInstance(
+              resource.name.clone(),
+            ),
+            level: permission.level,
+            specific: permission.specific.clone(),
+          });
+        expanded.extend(permissions);
+      }
       ResourceTargetVariant::Procedure => {
         let permissions = all_resources
           .procedures
@@ -1078,6 +1099,13 @@ pub async fn convert_user_groups(
         ResourceTarget::Alerter(id) => {
           *id = all
             .alerters
+            .get(id)
+            .map(|r| r.name.clone())
+            .unwrap_or_default()
+        }
+        ResourceTarget::IngressInstance(id) => {
+          *id = all
+            .ingress_instances
             .get(id)
             .map(|r| r.name.clone())
             .unwrap_or_default()

@@ -33,6 +33,12 @@ impl DockerClient {
           .context("no names on container (empty vec)")?
           .replace('/', "");
         let stats = stats.get(&name).cloned();
+        let all_labels = container.labels.unwrap_or_default();
+        let ingress_labels: HashMap<String, String> = all_labels
+          .iter()
+          .filter(|(k, _)| k.starts_with("traefik.") || k.starts_with("komodo.ingress."))
+          .map(|(k, v)| (k.clone(), v.clone()))
+          .collect();
         anyhow::Ok(ContainerListItem {
           server_id: None,
           name,
@@ -76,7 +82,8 @@ impl DockerClient {
                 .collect()
             })
             .unwrap_or_default(),
-          labels: container.labels.unwrap_or_default(),
+          labels: all_labels,
+          ingress_labels,
         })
       })
       .collect::<Vec<_>>();

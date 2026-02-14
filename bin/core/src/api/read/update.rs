@@ -13,6 +13,7 @@ use komodo_client::{
     action::Action,
     alerter::Alerter,
     build::Build,
+    ingress::IngressInstance,
     builder::Builder,
     deployment::Deployment,
     permission::PermissionLevel,
@@ -270,6 +271,14 @@ impl Resolve<ReadArgs> for GetUpdate {
       }
       ResourceTarget::Alerter(id) => {
         get_check_permissions::<Alerter>(
+          id,
+          user,
+          PermissionLevel::Read.into(),
+        )
+        .await?;
+      }
+      ResourceTarget::IngressInstance(id) => {
+        get_check_permissions::<IngressInstance>(
           id,
           user,
           PermissionLevel::Read.into(),

@@ -11,6 +11,7 @@ use komodo_client::entities::{
   build::BuildState,
   config::core::{CoreConfig, GithubWebhookAppConfig},
   deployment::DeploymentState,
+  ingress::CachedIngressState,
   procedure::ProcedureState,
   repo::RepoState,
   stack::StackState,
@@ -208,4 +209,12 @@ pub fn all_resources_cache() -> &'static ArcSwap<AllResourcesById> {
   static ALL_RESOURCES: OnceLock<ArcSwap<AllResourcesById>> =
     OnceLock::new();
   ALL_RESOURCES.get_or_init(Default::default)
+}
+
+pub fn ingress_cache(
+) -> &'static ArcSwap<HashMap<String, CachedIngressState>> {
+  static INGRESS_CACHE: OnceLock<
+    ArcSwap<HashMap<String, CachedIngressState>>,
+  > = OnceLock::new();
+  INGRESS_CACHE.get_or_init(Default::default)
 }

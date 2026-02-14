@@ -63,6 +63,10 @@ pub struct ContainerListItem {
   /// can get it using InspectContainer
   #[serde(default, skip_serializing)]
   pub labels: HashMap<String, String>,
+  /// Filtered labels for ingress (traefik.* and komodo.ingress.*).
+  /// Unlike `labels`, this is serialized and sent to Core.
+  #[serde(default, skip_serializing_if = "HashMap::is_empty")]
+  pub ingress_labels: HashMap<String, String>,
 }
 
 #[typeshare]

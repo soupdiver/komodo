@@ -10,6 +10,7 @@ use komodo_client::entities::{
   builder::Builder,
   config::DatabaseConfig,
   deployment::Deployment,
+  ingress::IngressInstance,
   permission::Permission,
   procedure::Procedure,
   provider::{DockerRegistryAccount, GitProviderAccount},
@@ -60,6 +61,7 @@ pub struct Client {
   pub procedures: Collection<Procedure>,
   pub actions: Collection<Action>,
   pub alerters: Collection<Alerter>,
+  pub ingress_instances: Collection<IngressInstance>,
   pub resource_syncs: Collection<ResourceSync>,
   pub stacks: Collection<Stack>,
   //
@@ -96,6 +98,8 @@ impl Client {
       alerters: resource_collection(&db, "Alerter").await?,
       procedures: resource_collection(&db, "Procedure").await?,
       actions: resource_collection(&db, "Action").await?,
+      ingress_instances: resource_collection(&db, "IngressInstance")
+        .await?,
       resource_syncs: resource_collection(&db, "ResourceSync")
         .await?,
       stacks: resource_collection(&db, "Stack").await?,

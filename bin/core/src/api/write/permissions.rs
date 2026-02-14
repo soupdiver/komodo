@@ -384,6 +384,20 @@ async fn extract_resource_target_with_validation(
         .id;
       Ok((ResourceTargetVariant::Alerter, id))
     }
+    ResourceTarget::IngressInstance(ident) => {
+      let filter = match ObjectId::from_str(ident) {
+        Ok(id) => doc! { "_id": id },
+        Err(_) => doc! { "name": ident },
+      };
+      let id = db_client()
+        .ingress_instances
+        .find_one(filter)
+        .await
+        .context("failed to query db for ingress instances")?
+        .context("no matching ingress instance found")?
+        .id;
+      Ok((ResourceTargetVariant::IngressInstance, id))
+    }
     ResourceTarget::Procedure(ident) => {
       let filter = match ObjectId::from_str(ident) {
         Ok(id) => doc! { "_id": id },

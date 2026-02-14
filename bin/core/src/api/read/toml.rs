@@ -9,9 +9,10 @@ use komodo_client::{
   entities::{
     ResourceTarget, action::Action, alerter::Alerter, build::Build,
     builder::Builder, deployment::Deployment,
-    permission::PermissionLevel, procedure::Procedure, repo::Repo,
-    resource::ResourceQuery, server::Server, stack::Stack,
-    sync::ResourceSync, toml::ResourcesToml, user::User,
+    ingress::IngressInstance, permission::PermissionLevel,
+    procedure::Procedure, repo::Repo, resource::ResourceQuery,
+    server::Server, stack::Stack, sync::ResourceSync,
+    toml::ResourcesToml, user::User,
   },
 };
 use resolver_api::Resolve;
@@ -52,6 +53,17 @@ async fn get_all_targets(
     .await?
     .into_iter()
     .map(|resource| ResourceTarget::Alerter(resource.id)),
+  );
+  targets.extend(
+    resource::list_full_for_user::<IngressInstance>(
+      ResourceQuery::builder().tags(tags).build(),
+      user,
+      PermissionLevel::Read.into(),
+      &all_tags,
+    )
+    .await?
+    .into_iter()
+    .map(|resource| ResourceTarget::IngressInstance(resource.id)),
   );
   targets.extend(
     resource::list_full_for_user::<Builder>(
@@ -221,6 +233,24 @@ impl Resolve<ReadArgs> for ExportResourcesToToml {
             vec![],
             &id_to_tags,
           ))
+        }
+        ResourceTarget::IngressInstance(id) => {
+          let mut ingress_instance =
+            get_check_permissions::<IngressInstance>(
+              &id,
+              user,
+              PermissionLevel::Read.into(),
+            )
+            .await?;
+          IngressInstance::replace_ids(&mut ingress_instance);
+          res
+            .ingress_instances
+            .push(convert_resource::<IngressInstance>(
+              ingress_instance,
+              false,
+              vec![],
+              &id_to_tags,
+            ))
         }
         ResourceTarget::ResourceSync(id) => {
           let mut sync = get_check_permissions::<ResourceSync>(
@@ -480,6 +510,14 @@ fn serialize_resources_toml(
     }
     toml.push_str("[[alerter]]\n");
     Alerter::push_to_toml_string(alerter, &mut toml)?;
+  }
+
+  for ingress_instance in resources.ingress_instances {
+    if !toml.is_empty() {
+      toml.push_str("\n\n##\n\n");
+    }
+    toml.push_str("[[ingress_instance]]\n");
+    IngressInstance::push_to_toml_string(ingress_instance, &mut toml)?;
   }
 
   for builder in resources.builders {

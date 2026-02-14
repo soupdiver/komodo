@@ -19,6 +19,7 @@ mod auth;
 mod cloud;
 mod config;
 mod helpers;
+mod ingress;
 mod listener;
 mod monitor;
 mod network;
@@ -94,6 +95,7 @@ async fn app() -> anyhow::Result<()> {
     .nest("/listener", listener::router())
     .nest("/ws", ws::router())
     .nest("/client", ts_client::router())
+    .nest("/ingress", ingress::router())
     .fallback_service(serve_frontend)
     .layer(
       CorsLayer::new()

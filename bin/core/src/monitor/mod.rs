@@ -116,6 +116,7 @@ async fn refresh_server_cache(ts: i64) {
     update_cache_for_server(&server, false).await;
   });
   join_all(futures).await;
+  crate::ingress::rebuild_ingress_cache().await;
   tokio::join!(check_alerts(ts), record_server_stats(ts));
 }
 

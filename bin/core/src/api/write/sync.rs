@@ -21,6 +21,7 @@ use komodo_client::{
     builder::Builder,
     config::core::CoreConfig,
     deployment::Deployment,
+    ingress::IngressInstance,
     komodo_timestamp,
     permission::PermissionLevel,
     procedure::Procedure,
@@ -804,6 +805,16 @@ impl Resolve<WriteArgs> for RefreshResourceSyncPending {
           .await?;
           push_updates_for_view::<Alerter>(
             resources.alerters,
+            delete,
+            None,
+            None,
+            &id_to_tags,
+            &sync.config.match_tags,
+            &mut diffs,
+          )
+          .await?;
+          push_updates_for_view::<IngressInstance>(
+            resources.ingress_instances,
             delete,
             None,
             None,

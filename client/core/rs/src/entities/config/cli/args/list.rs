@@ -107,6 +107,9 @@ pub enum ListCommand {
   /// List Alerters (aliases: `alerter`, `alrt`)
   #[clap(alias = "alerter", alias = "alrt")]
   Alerters(ResourceFilters),
+  /// List Ingress Instances (aliases: `ingress_instance`, `ingr`)
+  #[clap(alias = "ingress_instance", alias = "ingr")]
+  IngressInstances(ResourceFilters),
 }
 
 #[derive(Debug, Clone, clap::Parser)]

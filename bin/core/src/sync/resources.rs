@@ -10,6 +10,7 @@ use komodo_client::{
     build::Build,
     builder::{Builder, BuilderConfig},
     deployment::{Deployment, DeploymentImage},
+    ingress::IngressInstance,
     procedure::Procedure,
     repo::Repo,
     server::Server,
@@ -174,6 +175,17 @@ impl ResourceSyncTrait for Alerter {
 }
 
 impl ExecuteResourceSync for Alerter {}
+
+impl ResourceSyncTrait for IngressInstance {
+  fn get_diff(
+    original: Self::Config,
+    update: Self::PartialConfig,
+  ) -> anyhow::Result<Self::ConfigDiff> {
+    Ok(original.partial_diff(update))
+  }
+}
+
+impl ExecuteResourceSync for IngressInstance {}
 
 impl ResourceSyncTrait for Builder {
   fn get_diff(

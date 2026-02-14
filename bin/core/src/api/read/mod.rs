@@ -39,6 +39,7 @@ mod alerter;
 mod build;
 mod builder;
 mod deployment;
+mod ingress;
 mod permission;
 mod procedure;
 mod provider;
@@ -198,6 +199,13 @@ enum ReadRequest {
   GetAlerter(GetAlerter),
   ListAlerters(ListAlerters),
   ListFullAlerters(ListFullAlerters),
+
+  // ==== INGRESS INSTANCE ====
+  GetIngressInstancesSummary(GetIngressInstancesSummary),
+  GetIngressInstance(GetIngressInstance),
+  ListIngressInstances(ListIngressInstances),
+  ListFullIngressInstances(ListFullIngressInstances),
+  ListIngressRoutes(ListIngressRoutes),
 
   // ==== TOML ====
   ExportAllResourcesToToml(ExportAllResourcesToToml),

@@ -6,8 +6,8 @@ use komodo_client::{
   KomodoClient,
   api::read::{
     ListActions, ListAlerters, ListBuilders, ListBuilds,
-    ListDeployments, ListProcedures, ListRepos, ListResourceSyncs,
-    ListSchedules, ListServers, ListStacks, ListTags,
+    ListDeployments, ListIngressInstances, ListProcedures, ListRepos,
+    ListResourceSyncs, ListSchedules, ListServers, ListStacks, ListTags,
   },
   entities::{
     ResourceTargetVariant,
@@ -22,6 +22,7 @@ use komodo_client::{
     deployment::{
       DeploymentListItem, DeploymentListItemInfo, DeploymentState,
     },
+    ingress::{IngressInstanceListItem, IngressInstanceListItemInfo},
     procedure::{
       ProcedureListItem, ProcedureListItemInfo, ProcedureState,
     },
@@ -79,6 +80,9 @@ pub async fn handle(list: &args::list::List) -> anyhow::Result<()> {
     }
     Some(ListCommand::Alerters(filters)) => {
       list_resources::<AlerterListItem>(filters, false).await
+    }
+    Some(ListCommand::IngressInstances(filters)) => {
+      list_resources::<IngressInstanceListItem>(filters, false).await
     }
     Some(ListCommand::Schedules(filters)) => {
       list_schedules(filters).await
@@ -773,6 +777,34 @@ impl ListResources for AlerterListItem {
   }
 }
 
+impl ListResources for IngressInstanceListItem {
+  type Info = IngressInstanceListItemInfo;
+  async fn list(
+    client: &KomodoClient,
+    filters: &ResourceFilters,
+    minimal: bool,
+  ) -> anyhow::Result<Vec<Self>> {
+    let names = parse_wildcards(&filters.names);
+    let mut ingress_instances = client
+      .read(ListIngressInstances {
+        query: ResourceQuery::builder()
+          .tags(filters.tags.clone())
+          // .tag_behavior(TagQueryBehavior::Any)
+          .templates(filters.templates)
+          .build(),
+      })
+      .await?
+      .into_iter()
+      .filter(|ingress_instance| {
+        (!minimal || filters.all)
+          && matches_wildcards(&names, &[ingress_instance.name.as_str()])
+      })
+      .collect::<Vec<_>>();
+    ingress_instances.sort_by(|a, b| a.name.cmp(&b.name));
+    Ok(ingress_instances)
+  }
+}
+
 // TABLE
 
 impl PrintTable for ResourceListItem<ServerListItemInfo> {
@@ -1127,6 +1159,30 @@ impl PrintTable for ResourceListItem<AlerterListItemInfo> {
       row.push(Cell::new(resource_link(
         &cli_config().host,
         ResourceTargetVariant::Alerter,
+        &self.id,
+      )));
+    }
+    row
+  }
+}
+
+impl PrintTable for ResourceListItem<IngressInstanceListItemInfo> {
+  fn header(links: bool) -> &'static [&'static str] {
+    if links {
+      &["Ingress Instance", "Tags", "Link"]
+    } else {
+      &["Ingress Instance", "Tags"]
+    }
+  }
+  fn row(self, links: bool) -> Vec<comfy_table::Cell> {
+    let mut row = vec![
+      Cell::new(self.name).add_attribute(Attribute::Bold),
+      Cell::new(self.tags.join(", ")),
+    ];
+    if links {
+      row.push(Cell::new(resource_link(
+        &cli_config().host,
+        ResourceTargetVariant::IngressInstance,
         &self.id,
       )));
     }

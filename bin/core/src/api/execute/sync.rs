@@ -15,6 +15,7 @@ use komodo_client::{
     build::Build,
     builder::Builder,
     deployment::Deployment,
+    ingress::IngressInstance,
     komodo_timestamp,
     permission::PermissionLevel,
     procedure::Procedure,
@@ -129,6 +130,10 @@ impl Resolve<ExecuteArgs> for RunSync {
                 .alerters
                 .get(&name_or_id)
                 .map(|a| a.name.clone()),
+              ResourceTargetVariant::IngressInstance => all_resources
+                .ingress_instances
+                .get(&name_or_id)
+                .map(|i| i.name.clone()),
               ResourceTargetVariant::Build => all_resources
                 .builds
                 .get(&name_or_id)
@@ -333,6 +338,19 @@ impl Resolve<ExecuteArgs> for RunSync {
     } else {
       Default::default()
     };
+    let ingress_instance_deltas = if sync.config.include_resources {
+      get_updates_for_execution::<IngressInstance>(
+        resources.ingress_instances,
+        delete,
+        match_resource_type,
+        match_resources.as_deref(),
+        &id_to_tags,
+        &sync.config.match_tags,
+      )
+      .await?
+    } else {
+      Default::default()
+    };
     let resource_sync_deltas = if sync.config.include_resources {
       get_updates_for_execution::<entities::sync::ResourceSync>(
         resources.resource_syncs,
@@ -388,6 +406,7 @@ impl Resolve<ExecuteArgs> for RunSync {
       && build_deltas.no_changes()
       && builder_deltas.no_changes()
       && alerter_deltas.no_changes()
+      && ingress_instance_deltas.no_changes()
       && repo_deltas.no_changes()
       && procedure_deltas.no_changes()
       && action_deltas.no_changes()
@@ -442,6 +461,11 @@ impl Resolve<ExecuteArgs> for RunSync {
     maybe_extend(
       &mut update.logs,
       Alerter::execute_sync_updates(alerter_deltas).await,
+    );
+    maybe_extend(
+      &mut update.logs,
+      IngressInstance::execute_sync_updates(ingress_instance_deltas)
+        .await,
     );
     maybe_extend(
       &mut update.logs,

@@ -9,6 +9,7 @@ use super::{
   build::_PartialBuildConfig,
   builder::_PartialBuilderConfig,
   deployment::_PartialDeploymentConfig,
+  ingress::_PartialIngressInstanceConfig,
   permission::{
     PermissionLevel, PermissionLevelAndSpecifics, SpecificPermission,
   },
@@ -79,6 +80,13 @@ pub struct ResourcesToml {
     skip_serializing_if = "Vec::is_empty"
   )]
   pub alerters: Vec<ResourceToml<_PartialAlerterConfig>>,
+
+  #[serde(
+    default,
+    alias = "ingress_instance",
+    skip_serializing_if = "Vec::is_empty"
+  )]
+  pub ingress_instances: Vec<ResourceToml<_PartialIngressInstanceConfig>>,
 
   #[serde(
     default,

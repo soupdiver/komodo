@@ -10,6 +10,7 @@ use komodo_client::{
     build::Build,
     builder::{Builder, BuilderConfig, PartialBuilderConfig},
     deployment::{Deployment, DeploymentImage},
+    ingress::IngressInstance,
     procedure::Procedure,
     repo::Repo,
     resource::Resource,
@@ -158,6 +159,7 @@ pub fn convert_resource<R: KomodoResource>(
 
 // These have no linked resource ids to replace
 impl ToToml for Alerter {}
+impl ToToml for IngressInstance {}
 impl ToToml for Server {}
 impl ToToml for Action {}
 

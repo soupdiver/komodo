@@ -23,6 +23,7 @@ mod alerter;
 mod build;
 mod builder;
 mod deployment;
+mod ingress;
 mod permissions;
 mod procedure;
 mod provider;
@@ -145,6 +146,13 @@ pub enum WriteRequest {
   DeleteAlerter(DeleteAlerter),
   UpdateAlerter(UpdateAlerter),
   RenameAlerter(RenameAlerter),
+
+  // ==== INGRESS INSTANCE ====
+  CreateIngressInstance(CreateIngressInstance),
+  CopyIngressInstance(CopyIngressInstance),
+  DeleteIngressInstance(DeleteIngressInstance),
+  UpdateIngressInstance(UpdateIngressInstance),
+  RenameIngressInstance(RenameIngressInstance),
 
   // ==== PROCEDURE ====
   CreateProcedure(CreateProcedure),

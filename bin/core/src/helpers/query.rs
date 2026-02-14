@@ -20,6 +20,7 @@ use komodo_client::{
     action::{Action, ActionState},
     alerter::Alerter,
     build::Build,
+    ingress::IngressInstance,
     builder::Builder,
     deployment::{Deployment, DeploymentState},
     docker::container::{
@@ -322,6 +323,10 @@ pub async fn get_user_permission_on_target(
     }
     ResourceTarget::Alerter(id) => {
       get_user_permission_on_resource::<Alerter>(user, id).await
+    }
+    ResourceTarget::IngressInstance(id) => {
+      get_user_permission_on_resource::<IngressInstance>(user, id)
+        .await
     }
     ResourceTarget::Procedure(id) => {
       get_user_permission_on_resource::<Procedure>(user, id).await
