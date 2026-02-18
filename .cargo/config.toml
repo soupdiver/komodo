@@ -1,2 +1,3 @@
 [build]
 rustflags = ["-Wunused-crate-dependencies"]
+  jobs = 12

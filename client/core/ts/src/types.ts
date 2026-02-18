@@ -1698,6 +1698,12 @@ export interface IngressInstanceConfig {
 	 * Only one instance can be default.
 	 */
 	is_default?: boolean;
+	/**
+	 * The server this ingress instance's Traefik runs on (server id).
+	 * When a target container is on this same server, backend URLs use
+	 * host.docker.internal instead of the server's address.
+	 */
+	server_id?: string;
 }
 
 export type IngressInstance = Resource<IngressInstanceConfig, undefined>;

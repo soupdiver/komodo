@@ -351,6 +351,7 @@ export const useResourceParamType = () => {
   const type = useParams().type;
   if (!type) return undefined;
   if (type === "resource-syncs") return "ResourceSync";
+  if (type === "ingress-instances") return "IngressInstance";
   return (type[0].toUpperCase() + type.slice(1, -1)) as UsableResource;
 };
 

@@ -17,8 +17,12 @@ pub fn build(
   for labels in container_labels_list {
     let parsed = labels::parse_traefik_labels(labels);
 
-    // Merge routers
-    for (router_name, router_config) in parsed.routers {
+    // Merge routers and add service reference if service with same name exists
+    for (router_name, mut router_config) in parsed.routers {
+      // If a service with the same name exists and router doesn't have a service field, add it
+      if parsed.services.contains_key(&router_name) && !router_config.contains_key("service") {
+        router_config.insert("service".to_string(), Value::String(router_name.clone()));
+      }
       all_routers
         .insert(router_name, Value::Object(router_config));
     }
@@ -39,10 +43,17 @@ pub fn build(
           })
         });
 
-      // Merge loadBalancer config
-      if let Some(lb) = service_config.get("loadBalancer") {
+      // Merge loadBalancer config (but skip the 'server' field which is for Docker provider)
+      if let Some(Value::Object(lb)) = service_config.get("loadBalancer") {
         if let Value::Object(service_obj) = service_entry {
-          service_obj.insert("loadBalancer".to_string(), lb.clone());
+          if let Some(Value::Object(existing_lb)) = service_obj.get_mut("loadBalancer") {
+            // Merge properties from labels into existing loadBalancer, but skip 'server' field
+            for (key, value) in lb {
+              if key != "server" {
+                existing_lb.insert(key.clone(), value.clone());
+              }
+            }
+          }
         }
       }
 

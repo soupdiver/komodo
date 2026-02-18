@@ -71,7 +71,7 @@ ui_write_disabled = false
 ## Useful when only having http connection to core, as UI quick-copy button won't work.
 ## Env: KOMODO_DISABLE_CONFIRM_DIALOG
 ## Default: false
-disable_confirm_dialog = false
+disable_confirm_dialog = true
 
 ## Disables UI websocket automatic reconnection.
 ## Users will still be able to trigger reconnect by clicking the connection indicator.

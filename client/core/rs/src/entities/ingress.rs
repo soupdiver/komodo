@@ -43,6 +43,13 @@ pub struct IngressInstanceConfig {
   #[serde(default)]
   #[builder(default)]
   pub is_default: bool,
+
+  /// The server this ingress instance's Traefik runs on (server id).
+  /// When a target container is on this same server, backend URLs use
+  /// host.docker.internal instead of the server's address.
+  #[serde(default)]
+  #[builder(default)]
+  pub server_id: String,
 }
 
 impl IngressInstanceConfig {
@@ -57,6 +64,7 @@ impl Default for IngressInstanceConfig {
     Self {
       enabled: Default::default(),
       is_default: Default::default(),
+      server_id: Default::default(),
     }
   }
 }

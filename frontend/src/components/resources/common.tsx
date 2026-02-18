@@ -70,6 +70,7 @@ export const ResourcePageHeader = ({
   name,
   state,
   status,
+  hideTemplate,
 }: {
   type: UsableResource | undefined;
   id: string | undefined;
@@ -80,6 +81,7 @@ export const ResourcePageHeader = ({
   name?: string;
   state: string | undefined;
   status: string | undefined;
+  hideTemplate?: boolean;
 }) => {
   const color = text_color_class_by_intention(intent);
   const background = hex_color_by_intention(intent) + "15";
@@ -105,7 +107,7 @@ export const ResourcePageHeader = ({
           </div>
         </div>
       </div>
-      {type && id && resource && (
+      {type && id && resource && !hideTemplate && (
         <TemplateSwitch type={type} id={id} resource={resource} />
       )}
     </div>
@@ -590,7 +592,10 @@ export const DeleteResource = ({
   id: string;
 }) => {
   const nav = useNavigate();
-  const key = type === "ResourceSync" ? "sync" : type.toLowerCase();
+  const key =
+    type === "ResourceSync" ? "sync"
+    : type === "IngressInstance" ? "ingress_instance"
+    : type.toLowerCase();
   const resource = useRead(`Get${type}`, {
     [key]: id,
   } as any).data;

@@ -51,6 +51,8 @@ const buildComposeYaml = (
   return `services:
   traefik:
     image: traefik:v3.4
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command:
 ${commandLines.join("\n")}
     ports:
@@ -65,6 +67,7 @@ export const DeployTraefikButton = ({ id }: { id: string }) => {
   );
   const servers = useRead("ListServers", {}).data || [];
   const navigate = useNavigate();
+  const { mutate: updateIngress } = useWrite("UpdateIngressInstance");
   const { mutate: createStack, isPending } = useWrite("CreateStack", {
     onSuccess: (stack) => {
       setOpen(false);
@@ -94,6 +97,15 @@ export const DeployTraefikButton = ({ id }: { id: string }) => {
     if (!instance || !selectedServer) return;
 
     const yaml = buildComposeYaml(instance.name, coreUrl, entrypoints);
+
+    // Update ingress instance with selected server_id
+    updateIngress({
+      id,
+      config: {
+        server_id: selectedServer,
+      },
+    });
+
     createStack({
       name: `traefik-${instance.name}`,
       config: {
@@ -108,7 +120,8 @@ export const DeployTraefikButton = ({ id }: { id: string }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost">
+          Deploy Traefik
           <Network className="w-4 h-4" />
         </Button>
       </DialogTrigger>
